@@ -15,11 +15,12 @@ class PLANETSIX_API UPlanetSixGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
+
+
 private:
 
 
 	//PlayerCharacter values
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		FPlayerInfo PlayerInfo;
 
 public:
@@ -29,6 +30,19 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	FPlayerInfo GetPlayerInfo();
+	
+	UFUNCTION(BlueprintCallable)
+	FQuestData GetCurrentQuest();
+
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentQuest(FQuestData Quest);
+	
+	
+	UFUNCTION(BlueprintCallable)
+	void MoveToNextObjective();
+	
+	UFUNCTION(BlueprintCallable)
+	void ReduceCurrentTargetNumber(int ID);
 	
 	UFUNCTION(BlueprintCallable)
 	void AddQuest(FQuestData quest);

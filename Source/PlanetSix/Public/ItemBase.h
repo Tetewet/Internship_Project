@@ -63,10 +63,10 @@ protected:
 	UPROPERTY(Category = Item, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		USphereComponent* sphereCollider;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FItemBaseData itemData UMETA(ExposeOnSpawn = "true");
 
 public:	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FItemBaseData itemData UMETA(ExposeOnSpawn = "true");
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

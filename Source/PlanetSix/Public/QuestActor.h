@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/DataTable.h"
+#include"Engine.h"
 #include "UObject/ConstructorHelpers.h"
 #include "QuestActor.generated.h"
 
@@ -16,7 +17,7 @@ enum EObjectiveType
 	Kill = 1 UMETA(DisplayName = "Kill"),
 	Gathering = 2 UMETA(DisplayName = "Gather"),
 	TalkToNpc = 4 UMETA(DisplayName = "Talktonpc"),
-	Location = 8 UMETA(DisplayName = "Location")//change to delegates 
+	Location = 8 UMETA(DisplayName = "Location") //change to delegates 
 };
 
 USTRUCT(BlueprintType)
@@ -39,9 +40,11 @@ struct FObjectiveData
 	//Check if objective is complete
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 		bool IsCompleted;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+		FString LocationToGo;
 
 };
-
 
 USTRUCT(BlueprintType)
 struct FQuestData :public FTableRowBase
@@ -49,11 +52,11 @@ struct FQuestData :public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
-	    int QuestID;//=questdatatable.questID 
+	    int QuestID;//=questdatatable.questID
 
 	//this is the name of the quest 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
-		FText QuestName;
+		FText QuestTitleName;
 
 	//Quest description
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
@@ -61,12 +64,24 @@ struct FQuestData :public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 		bool IsStoryQuest;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+		int AtObjectiveNumber = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+		bool IsQuestCompleted = false;
 
 	//array of objective so that each quest can have a multiple objectives
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 		TArray<FObjectiveData> objectives;
 
 	bool operator==(const FQuestData& Q) const;
+
+	static FQuestData Empty() {
+		FQuestData q;
+		q.QuestID = -1;
+		return q;
+	}
 
 };
 
@@ -88,15 +103,19 @@ public:
 	bool IsQuestActive=false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
-	FName NameOfQuest;
+	FName QuestID;
 
-
+	//The Component of the data table to be able to be read in Unreal
+	FQuestData* QuestDataPointer;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
-	class UDataTable* QuestDatable;
+	class UDataTable* QuestDatatable;
 
+	FQuestData QuestData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
-		FQuestData QuestData;
+	//FText QuestNameText;
+	//FText QuestDescriptionText;
+
 
 	//Function to organize the quests in the  editor it attaches the location to the parent 
 	UFUNCTION(CallInEditor, BlueprintCallable)
@@ -110,5 +129,7 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+
 
 };

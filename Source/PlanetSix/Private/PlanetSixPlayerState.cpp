@@ -59,9 +59,31 @@ void APlanetSixPlayerState::BeginPlay() {
 	}*/
 
 	//if (!HasAuthority()) {
+	//}
 		ReloadPlayerInfo();
 		print("Connecting to game instance with name: " + Cast<UPlanetSixGameInstance>(GetGameInstance())->GetPlayerInfo().UserName, -1);
-	//}
+	
+		
+		//To check if Quest has a Location condition
+		UPlanetSixGameInstance* GameInstance = Cast<UPlanetSixGameInstance>(GetGameInstance());
+			int objectiveNumber = GameInstance->GetCurrentQuest().AtObjectiveNumber;
+			if (GameInstance->GetCurrentQuest().objectives.Num() > 0) {
+				if (GameInstance->GetCurrentQuest().objectives[objectiveNumber].Objectivetype == EObjectiveType::Location)
+				{
+					if (GameInstance->GetCurrentQuest().objectives[objectiveNumber].LocationToGo == UGameplayStatics::GetCurrentLevelName(GetWorld())) {
+						GameInstance->GetCurrentQuest().objectives[objectiveNumber].IsCompleted = true;
+						GameInstance->MoveToNextObjective();
+						print("Finished Objective number " + FString::FromInt(objectiveNumber + 1),-1);
+				//Success
+						GameInstance->ReloadNetwork();
+
+					}
+
+
+				}
+			}
+
+
 }
 
 

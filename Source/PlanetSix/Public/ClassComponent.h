@@ -12,26 +12,17 @@ class APlanetSixCharacter;
 UENUM(BlueprintType)
 enum class EClassName : uint8
 {
-	None UMETA(DisplayName = "None"),
-	//pirate faction classes :
-	Pir_Surgeon UMETA(DisplayName = "Pirate Surgeon"),
-	Pir_QuarterMaster UMETA(DisplayName = "Pirate QuarterMaster"),
-	Pir_Gunner UMETA(DisplayName = "Pirate Gunner"),
-	//vanguard faction classes :
-	Van_Physicien UMETA(DisplayName = "Vanguard Physicien"),
-	Van_Brigadier UMETA(DisplayName = "Vanguard Brigadier"),
-	Van_Volontaire UMETA(DisplayName = "Vanguard Volontaire"),
-	//Unionists faction classes :
-	Uni_Sanitar UMETA(DisplayName = "Unionist Sanitar"),
-	Uni_Comissar UMETA(DisplayName = "Unionist Comissar"),
-	Uni_Comrade UMETA(DisplayName = "Unionist Comrade")
+	None = 0 UMETA(DisplayName = "None"),
+	Physician = 1 UMETA(DisplayName = "Physician"),
+	Comissar = 2 UMETA(DisplayName = "Comissar"),
+	Gunner = 4 UMETA(DisplayName = "Gunner"),
 };
 
 UENUM(BlueprintType)
 enum class ESkillName : uint8
 {
 	None UMETA(DisplayName = "None"),
-	Uni_Pylon UMETA(DisplayName = "Pylon")
+	Pylon UMETA(DisplayName = "Pylon")
 };
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -46,11 +37,14 @@ public:
 	//getter for the class name
 	UFUNCTION(BlueprintPure)
 		FString GetClassName() { return ClassTextName; }
+	//getter for the class name
+	UFUNCTION(BlueprintPure)
+		EClassName GetClassType() { return ClassEnumName; }
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		TArray<ASkill*> AvailableSkillsArray;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		TArray<ASkill*> EquippedSkillsArray;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<ASkill>> AvailableSkillsArray;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<TSubclassOf<ASkill>> EquippedSkillsArray;
 
 protected:
 	// Called when the game starts

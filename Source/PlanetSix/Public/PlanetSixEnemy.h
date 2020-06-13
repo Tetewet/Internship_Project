@@ -49,4 +49,6 @@ public:
 
 	// Called to do damage calcs and check if Enemy is dead
 	//bool IsDead(float damage = 0);
+
+	virtual void Death() override;
 };

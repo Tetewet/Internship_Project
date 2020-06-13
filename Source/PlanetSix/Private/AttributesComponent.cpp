@@ -25,6 +25,7 @@ UAttributesComponent::UAttributesComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
+	
 }
 
 void UAttributesComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -52,6 +53,8 @@ void UAttributesComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
+	SetActive(true);
+	SetIsReplicated(true);
 }
 
 //** getter for base value of attribute */

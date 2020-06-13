@@ -12,6 +12,7 @@
 #include "WeaponComponent.h"
 #include "ClassComponent.h"
 #include "BaseCharacter.h"
+#include "QuestBoardWidget.h"
 #include "GameFramework/Character.h"
 #include "PlanetSixCharacter.generated.h"
 
@@ -21,6 +22,7 @@ class AQuestActor;
 class APlayerController;
 class ASkill;
 class AMapTravel;
+class UinventoryWidget;
 
 UCLASS(config = Game)
 class APlanetSixCharacter : public ABaseCharacter
@@ -28,8 +30,8 @@ class APlanetSixCharacter : public ABaseCharacter
 	GENERATED_BODY()
 
 		virtual void BeginPlay() override;
-		/** Camera boom positioning the camera behind the character */
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	/** Camera boom positioning the camera behind the character */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
@@ -50,7 +52,7 @@ public:
 #pragma region(Quests Logic)
 	//this is to create the widget of the NPCQuest  
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPCQuestUI")
-		TSubclassOf<UUserWidget>NPCQuestWidgetClass;
+		TSubclassOf<UUserWidget> NPCQuestWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite)
 		UNPCQuestWidget* WidgetQuestNPC;
@@ -59,6 +61,15 @@ public:
 	//this is to create the quest LOG 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestUIWidget")
 		TSubclassOf<UUserWidget> QuestWidgetLog;
+
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestCompleted")
+		TSubclassOf<UUserWidget> QuestCompletedClass;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestCompleted")
+		UUserWidget* QuestCompletedWidget;
 
 	//this is for the WidgetQuestLog
 	UQuestWidget* WidgetQuestLog;
@@ -71,11 +82,23 @@ public:
 
 	//Reference to NPC Actor
 	ANPC* NPCReference;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestBoard")
+		TSubclassOf<UUserWidget> QuestBoardWidgetRef;
+
+	//Reference to QuestBoardWidget
+	UPROPERTY(BlueprintReadWrite, Category = "QuestBoard")
+		UQuestBoardWidget* QuestBoardWidget;
+
 #pragma endregion
 
 	/** Player's inventory. */
 	UPROPERTY(BlueprintReadWrite, Category = "Inventory")
 		UInventoryComponent* InventoryComponent;
+
+	/** inventory widget */
+	UPROPERTY(BlueprintReadWrite, Category = "Inventory")
+		UinventoryWidget* InventoryWidget;
 
 	/** Player's weapons. */
 	UPROPERTY(BlueprintReadWrite, Category = "Weapons")
@@ -91,12 +114,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "IGMenu")
 		TSubclassOf<UUserWidget> InGameMenu;
-
-	UPROPERTY(EditAnywhere, Category = "Item")
-		TSubclassOf<AItemBase> ItemBP;
-
-	UPROPERTY(EditAnywhere, Category = "Item")
-		UStaticMesh* ItemMesh;
 
 protected:
 #pragma region(Character Move & Input Actions)
@@ -203,4 +220,6 @@ public:
 	/** Property replication */
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void ItemPickup();
+	virtual void Death() override;
 };

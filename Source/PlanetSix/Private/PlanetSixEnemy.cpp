@@ -66,3 +66,7 @@ void APlanetSixEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 //
 //}
 
+void APlanetSixEnemy::Death()
+{
+	Destroy();
+}

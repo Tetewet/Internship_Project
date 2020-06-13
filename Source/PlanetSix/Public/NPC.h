@@ -26,7 +26,10 @@ public:
 		UBoxComponent* boxcomponent;
 
 	UPROPERTY(EditAnywhere)
-		UTextRenderComponent* textrender;
+		UTextRenderComponent* textrenderInteraction;
+
+	UPROPERTY(EditAnywhere)
+		UTextRenderComponent* textrenderQuest;
 
 	UPROPERTY(EditAnywhere)
 		USkeletalMeshComponent* skeleton;
@@ -34,8 +37,24 @@ public:
 	UPROPERTY(EditAnywhere)
 		UAnimationAsset* AnimIdle;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+		FName QuestID;
 	UPROPERTY(EditAnywhere)
-		AQuestActor* SpecifiedQuestOFNPC;
+		UAnimationAsset* AnimInteract;
+
+	bool bOnInteraction;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+		FQuestData NPCQuest;
+
+	//The Component of the data table to be able to be read in Unreal
+	FQuestData* QuestDataPointer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+		class UDataTable* QuestDatatable;
+
+	
+	
 
 protected:
 	// Called when the game starts or when spawned

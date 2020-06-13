@@ -4,7 +4,11 @@
 #include "WeaponBase.h"
 #include "PlanetSixCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "PlanetSixGameInstance.h"
 #include "Engine.h"
+
+#define print(text, i) if (GEngine) GEngine->AddOnScreenDebugMessage(i, 1.5, FColor::White,text)
+
 
 // Sets default values
 AWeaponBase::AWeaponBase()
@@ -31,39 +35,66 @@ void AWeaponBase::BeginPlay()
 	}
 }
 
-void AWeaponBase::Fire()
+void AWeaponBase::Fire_Implementation()
 {
 	//logic of firing : can't fire if jammed
-	if (bIsWeaponJammed == false && AmmoInMagazine > 0)
+	if (bIsWeaponJammed == false)
 	{
-		APlayerCameraManager* CameraManager = GetWorld()->GetFirstPlayerController()->PlayerCameraManager;
-		FVector StartFiringLocation;
-		FVector EndFiringLocation;
-		StartFiringLocation = MuzzleLocation->GetComponentLocation();
-		EndFiringLocation = CameraManager->GetCameraLocation() + CameraManager->GetCameraRotation().Vector() * 10000;
+		APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+		FVector BeginCrosshair = CameraManager->GetCameraLocation();
+		FVector EndCrosshair = CameraManager->GetCameraLocation() + CameraManager->GetCameraRotation().Vector() * 10000;
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(OwnerPlayer);
 		QueryParams.AddIgnoredActor(this);
 		QueryParams.bTraceComplex = true;
+
 		FHitResult Hit;
-		if (GetWorld()->LineTraceSingleByChannel(Hit, StartFiringLocation, EndFiringLocation, ECC_Visibility, QueryParams))
+		if (GetWorld()->LineTraceSingleByChannel(Hit, BeginCrosshair, EndCrosshair, ECC_Visibility, QueryParams))
 		{
+			DrawDebugLine(GetWorld(), BeginCrosshair, EndCrosshair, FColor::Blue, false, 1.0f, 0, 1.0f);
+			FVector StartFiringLocation = MuzzleLocation->GetComponentLocation();
+			FVector EndFiringLocation = Hit.Location;
+			GetWorld()->LineTraceSingleByChannel(Hit, StartFiringLocation, EndFiringLocation, ECC_Visibility, QueryParams);
+			DrawDebugLine(GetWorld(), StartFiringLocation, EndFiringLocation, FColor::Red, false, 1.0f, 0, 1.0f);
 			auto ActorHit = Cast<ABaseCharacter>(Hit.GetActor());
 			if (ActorHit != nullptr)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Shot touched"));
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), OwnerPlayer->WeaponDamage()));
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("LIFE OF ENEMY : %f"), ActorHit->Attributes->Health.GetCurrentValue()));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("LIFE OF ENEMY : %f DAMAGE INFLICTED : %f"), ActorHit->Attributes->Health.GetCurrentValue(), OwnerPlayer->WeaponDamage()));
 				ActorHit->ReceiveDamage(OwnerPlayer->WeaponDamage());
 				if (ActorHit->IsDead())
 				{
-					ActorHit->Death();
+					//To check if Quest has a Killing condition
+					UPlanetSixGameInstance* GameInstance = Cast<UPlanetSixGameInstance>(GetGameInstance());
+					int objectiveNumber = GameInstance->GetCurrentQuest().AtObjectiveNumber;
+					FQuestData CurrentQuest = GameInstance->GetCurrentQuest();
+					if (CurrentQuest.objectives.Num() > 0) {
+						if (CurrentQuest.objectives[objectiveNumber].LocationToGo == UGameplayStatics::GetCurrentLevelName(GetWorld())) {
+							if (CurrentQuest.objectives[objectiveNumber].Objectivetype == EObjectiveType::Kill)
+							{
+								if (CurrentQuest.objectives[objectiveNumber].Targets.Contains(0))
+								{
+									if (Cast<ABaseCharacter>(Hit.GetActor())) 
+									{
+										GameInstance->ReduceCurrentTargetNumber(0);
+										CurrentQuest = GameInstance->GetCurrentQuest();
+										print("This many targets left: " + FString::FromInt(CurrentQuest.objectives[objectiveNumber].Targets[0]), -1);
+
+										if (CurrentQuest.objectives[objectiveNumber].Targets[0] <= 0) 
+										{
+
+											//Generic Target completed when done once // Will have to edit when more IDs are added for the enemy
+											CurrentQuest.objectives[objectiveNumber].IsCompleted = true;
+											GameInstance->MoveToNextObjective();
+											print("Finished Objective number " + FString::FromInt(objectiveNumber + 1), -1);
+											//Success
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Shot fired"));
-			OwnerPlayer->CameraCrosshair = OwnerPlayer->GetFollowCamera()->GetForwardVector();
-			DrawDebugLine(GetWorld(), StartFiringLocation, Hit.Location, FColor::White, false, 1.0f, 0, 1.0f);
-			DrawDebugLine(GetWorld(), StartFiringLocation, EndFiringLocation, FColor::Red, false, 1.0f, 0, 1.0f);
 		}
 		AmmoInMagazine--;
 		Recoil();

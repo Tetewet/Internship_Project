@@ -113,7 +113,7 @@ public:
 		static void SetMaxValue(UPARAM(ref) FAttributesData& AttributesData, const float Value) { AttributesData.SetMaxValue(Value); }
 };
 
-UCLASS(ClassGroup = (Custom), meta = (Blueprintable))
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class PLANETSIX_API UAttributesComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -135,29 +135,29 @@ public:
 		FAttributesData AbilitiesProficiency;
 	//------------------------------------------------------------------------------------------------------
 	/** Level of the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Level", ReplicatedUsing = OnRep_Level)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Level", Replicated, ReplicatedUsing = OnRep_Level)
 		FAttributesData Level;
 	/** Experience points for the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Level", ReplicatedUsing = OnRep_Experience)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Level", Replicated, ReplicatedUsing = OnRep_Experience)
 		FAttributesData Experience;
 	/** CurrentHealth attribute for the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health", ReplicatedUsing = OnRep_CurrentHealth)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health", Replicated, ReplicatedUsing = OnRep_CurrentHealth)
 		FAttributesData Health;
 	/** CurrentEnergy attribute for the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Energy", ReplicatedUsing = OnRep_CurrentEnergy)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Energy", Replicated, ReplicatedUsing = OnRep_CurrentEnergy)
 		FAttributesData Energy;
 	/** CurrentShield attribute for the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Shield", ReplicatedUsing = OnRep_CurrentShield)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Shield", Replicated, ReplicatedUsing = OnRep_CurrentShield)
 		FAttributesData Shield;
 	//------------------------------------------------------------------------------------------------------
 	/** armor reduction attribute for the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Armor", ReplicatedUsing = OnRep_ArmorReduction)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Armor", Replicated, ReplicatedUsing = OnRep_ArmorReduction)
 		FAttributesData ArmorReduction;
 	/** weapon damage attribute for the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Damage", ReplicatedUsing = OnRep_WeaponDamage, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Damage", Replicated, ReplicatedUsing = OnRep_WeaponDamage, meta = (AllowPrivateAccess = "true"))
 		FAttributesData WeaponDamage;
 	/** Ability damage attribute for the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Damage", ReplicatedUsing = OnRep_AbilityDamage)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Damage", Replicated, ReplicatedUsing = OnRep_AbilityDamage)
 		FAttributesData AbilityDamage;
 
 	/** Response to armors proficiency attribute being updated. Called on the server immediately after modification, and on clients in response to a RepNotify */

@@ -7,6 +7,7 @@
 #include "Skill.generated.h"
 
 class APlanetSixCharacter;
+class UTexture2D;
 
 /** Types of damage for skills.
 @ Raw is blunt damage
@@ -21,18 +22,32 @@ enum class ESkillDamageType : uint8
 	DoT = 4 UMETA(DisplayName = "Damage over Time")
 };
 
-/** Types of damage for skills.
-@ Raw is blunt damage
-@ AoE is area of effect (zone)
-@ DoT is damage over time (every second) */
+/** Types of skills.
+@ Instant is instant cast skill (no activation time)
+@ Passive is always active
+@ Casting is activation time */
 UENUM(BlueprintType)
 enum class ESkillType : uint8
 {
 	None = 0 UMETA(DisplayName = "None"),
 	Instant = 1 UMETA(DisplayName = "Instant Skill"),
 	Passive = 2 UMETA(DisplayName = "Passive Skill"),
-	Casting = 4 UMETA(DisplayName = "Casting Skill"),
-	dd = 8 UMETA(DisplayName = "Non Skill")
+	Casting = 4 UMETA(DisplayName = "Casting Skill")
+	//dd = 8 UMETA(DisplayName = "Non Skill")
+};
+
+/** Types of skills.
+@ Locked : skill has to be unlocked before equipping it
+@ Unlocked : skill is equippable
+@ Equipped : skill is castable */
+UENUM(BlueprintType)
+enum class ESkillStatus : uint8
+{
+	None = 0 UMETA(DisplayName = "None"),
+	Locked = 1 UMETA(DisplayName = "Locked"),
+	Unlocked = 2 UMETA(DisplayName = "Unlocked"),
+	Equipped = 4 UMETA(DisplayName = "Equipped")
+	//dd = 8 UMETA(DisplayName = "Non Skill")
 };
 
 UCLASS()
@@ -67,6 +82,10 @@ protected:
 		ESkillDamageType SkillDamageType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		ESkillType SkillType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		ESkillStatus SkillStatus;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UTexture2D* SkillIcon;
 
 	/** factor for damage scaling on raw abilities */
 	const float DamageFactor_Raw = 5.f;
@@ -86,5 +105,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	UFUNCTION(BlueprintCallable)
-		void DoDamage(APlanetSixCharacter* DamageReceiver);
+		void DoDamage(ABaseCharacter* DamageReceiver);
 };
