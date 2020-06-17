@@ -21,6 +21,7 @@ class UQuestWidget;
 class AQuestActor;
 class APlayerController;
 class ASkill;
+struct FSkillData;
 class AMapTravel;
 class UinventoryWidget;
 
@@ -51,7 +52,7 @@ public:
 
 #pragma region(Quests Logic)
 	//this is to create the widget of the NPCQuest  
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPCQuestUI")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest UI")
 		TSubclassOf<UUserWidget> NPCQuestWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -59,16 +60,19 @@ public:
 
 	/*Quest Widget UI*/
 	//this is to create the quest LOG 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestUIWidget")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest UI")
 		TSubclassOf<UUserWidget> QuestWidgetLog;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest UI")
+		TSubclassOf<UUserWidget> CurrentQuestWidget;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Quest UI")
+		UUserWidget* CurrentQuest;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestCompleted")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest UI")
 		TSubclassOf<UUserWidget> QuestCompletedClass;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestCompleted")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest UI")
 		UUserWidget* QuestCompletedWidget;
 
 	//this is for the WidgetQuestLog
@@ -83,11 +87,11 @@ public:
 	//Reference to NPC Actor
 	ANPC* NPCReference;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "QuestBoard")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest UI")
 		TSubclassOf<UUserWidget> QuestBoardWidgetRef;
 
 	//Reference to QuestBoardWidget
-	UPROPERTY(BlueprintReadWrite, Category = "QuestBoard")
+	UPROPERTY(BlueprintReadWrite, Category = "Quest UI")
 		UQuestBoardWidget* QuestBoardWidget;
 
 #pragma endregion
@@ -109,8 +113,11 @@ public:
 		FVector CameraCrosshair;
 
 	/** Player's HUD. */
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
-		UUserWidget* MainHUD;
+	UPROPERTY(EditAnywhere, Category = "UI")
+		TSubclassOf<UUserWidget> MainHUD;
+
+	//Skill Data for the player
+	FSkillData* SkillData;
 
 	UPROPERTY(EditDefaultsOnly, Category = "IGMenu")
 		TSubclassOf<UUserWidget> InGameMenu;

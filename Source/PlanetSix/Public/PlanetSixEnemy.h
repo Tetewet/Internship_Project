@@ -21,6 +21,11 @@ class PLANETSIX_API APlanetSixEnemy : public ABaseCharacter
 public:
 	// Sets default values for this pawn's properties
 	APlanetSixEnemy(const FObjectInitializer& ObjectInitializer);
+
+	//Enemy Stats
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category = Info)
+	int32 ID;
+
 protected:
 
 	/*UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -29,12 +34,9 @@ protected:
 	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* Collider;*/
 
-	UPROPERTY(Category = Character, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Category = Movement, VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 		UFloatingPawnMovement* MovComp;
 
-protected:
-	//Enemy Stats
-	FEnemyInfo Info;
 
 protected:
 	// Called when the game starts or when spawned
@@ -51,4 +53,6 @@ public:
 	//bool IsDead(float damage = 0);
 
 	virtual void Death() override;
+
+	int GetID();
 };

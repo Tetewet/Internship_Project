@@ -59,6 +59,8 @@ protected:
 		FString ClassDescription;
 	UPROPERTY(VisibleAnywhere)
 		EClassName ClassEnumName;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int32 SkillPoints;
 
 public:
 	// Called every frame

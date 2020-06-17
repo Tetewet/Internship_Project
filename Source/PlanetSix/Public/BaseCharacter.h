@@ -29,15 +29,7 @@ public:
 		FQuestData QuestAccepted;
 };
 
-USTRUCT(BlueprintType)
-struct PLANETSIX_API FEnemyInfo
-{
-	GENERATED_USTRUCT_BODY()
 
-public:
-	int32 EnemyID;
-	bool bIsDead;
-};
 #pragma endregion
 
 UCLASS(config = Game)

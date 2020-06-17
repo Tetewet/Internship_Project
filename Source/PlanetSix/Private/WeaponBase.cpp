@@ -3,6 +3,7 @@
 
 #include "WeaponBase.h"
 #include "PlanetSixCharacter.h"
+#include "PlanetSixEnemy.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "PlanetSixGameInstance.h"
 #include "Engine.h"
@@ -54,7 +55,7 @@ void AWeaponBase::Fire_Implementation()
 			DrawDebugLine(GetWorld(), BeginCrosshair, EndCrosshair, FColor::Blue, false, 1.0f, 0, 1.0f);
 			FVector StartFiringLocation = MuzzleLocation->GetComponentLocation();
 			FVector EndFiringLocation = Hit.Location;
-			GetWorld()->LineTraceSingleByChannel(Hit, StartFiringLocation, EndFiringLocation, ECC_Visibility, QueryParams);
+			GetWorld()->LineTraceSingleByChannel(Hit, StartFiringLocation, EndFiringLocation, ECC_Pawn, QueryParams);
 			DrawDebugLine(GetWorld(), StartFiringLocation, EndFiringLocation, FColor::Red, false, 1.0f, 0, 1.0f);
 			auto ActorHit = Cast<ABaseCharacter>(Hit.GetActor());
 			if (ActorHit != nullptr)
@@ -68,28 +69,26 @@ void AWeaponBase::Fire_Implementation()
 					int objectiveNumber = GameInstance->GetCurrentQuest().AtObjectiveNumber;
 					FQuestData CurrentQuest = GameInstance->GetCurrentQuest();
 					if (CurrentQuest.objectives.Num() > 0) {
+						//If at location
 						if (CurrentQuest.objectives[objectiveNumber].LocationToGo == UGameplayStatics::GetCurrentLevelName(GetWorld())) {
+							
+							//If needs to kill
 							if (CurrentQuest.objectives[objectiveNumber].Objectivetype == EObjectiveType::Kill)
 							{
-								if (CurrentQuest.objectives[objectiveNumber].Targets.Contains(0))
+								
+								if (Cast<APlanetSixCharacter>(Hit.GetActor()))
 								{
-									if (Cast<ABaseCharacter>(Hit.GetActor())) 
-									{
-										GameInstance->ReduceCurrentTargetNumber(0);
-										CurrentQuest = GameInstance->GetCurrentQuest();
-										print("This many targets left: " + FString::FromInt(CurrentQuest.objectives[objectiveNumber].Targets[0]), -1);
-
-										if (CurrentQuest.objectives[objectiveNumber].Targets[0] <= 0) 
-										{
-
-											//Generic Target completed when done once // Will have to edit when more IDs are added for the enemy
-											CurrentQuest.objectives[objectiveNumber].IsCompleted = true;
-											GameInstance->MoveToNextObjective();
-											print("Finished Objective number " + FString::FromInt(objectiveNumber + 1), -1);
-											//Success
-										}
-									}
+									GameInstance->ReduceCurrentTargetNumber(0);
+									//If Player
 								}
+								if (Cast<APlanetSixEnemy>(Hit.GetActor()))
+								{
+									//If Enemy
+									GameInstance->ReduceCurrentTargetNumber(Cast<APlanetSixEnemy>(Hit.GetActor())->GetID());
+
+
+								}
+							
 							}
 						}
 					}

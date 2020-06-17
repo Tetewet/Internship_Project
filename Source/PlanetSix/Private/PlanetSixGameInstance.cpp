@@ -26,10 +26,25 @@ FQuestData UPlanetSixGameInstance::GetCurrentQuest()
 
 void UPlanetSixGameInstance::ReduceCurrentTargetNumber(int ID)
 {
-	 PlayerInfo.QuestAccepted.objectives[PlayerInfo.QuestAccepted.AtObjectiveNumber].Targets[ID]--;
-	 print("Targets reduced by one",-1);
-	 ReloadNetwork();
+	int32 objectiveNumber = PlayerInfo.QuestAccepted.AtObjectiveNumber;
+	if (PlayerInfo.QuestAccepted.objectives[objectiveNumber].Targets.Contains(ID)) {
+		PlayerInfo.QuestAccepted.objectives[objectiveNumber].Targets[ID]--;
+		print("Targets reduced by one", -1);
+		ReloadNetwork();
+		if (PlayerInfo.QuestAccepted.objectives[objectiveNumber].Targets[ID] <= 0)
+		{
 
+			//ObjectiveCompleted
+			PlayerInfo.QuestAccepted.objectives[objectiveNumber].IsCompleted = true;
+			MoveToNextObjective();
+			print("Finished Objective number " + FString::FromInt(objectiveNumber + 1), -1);
+			//Success
+		}
+	}
+	else {
+		print("This is not the right target", -1);
+	
+	}
 }
 
 void UPlanetSixGameInstance::MoveToNextObjective()

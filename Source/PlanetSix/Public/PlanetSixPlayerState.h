@@ -23,7 +23,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 		void ChangeInfo(const FPlayerInfo& info);
-
 	void ChangeInfo_Implementation(const FPlayerInfo& name);
 
 	UFUNCTION(BlueprintCallable)

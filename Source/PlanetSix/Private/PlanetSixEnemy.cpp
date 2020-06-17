@@ -70,3 +70,8 @@ void APlanetSixEnemy::Death()
 {
 	Destroy();
 }
+
+int APlanetSixEnemy::GetID()
+{
+	return ID;
+}

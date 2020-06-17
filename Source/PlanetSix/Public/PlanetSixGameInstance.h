@@ -32,6 +32,10 @@ public:
 	FPlayerInfo GetPlayerInfo();
 	
 	UFUNCTION(BlueprintCallable)
+	void ReloadNetwork();
+
+	//Quest Manager Functions
+	UFUNCTION(BlueprintCallable)
 	FQuestData GetCurrentQuest();
 
 	UFUNCTION(BlueprintCallable)
@@ -46,7 +50,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void AddQuest(FQuestData quest);
+	//
 
-	UFUNCTION(BlueprintCallable)
-	void ReloadNetwork();
+
+
 };
