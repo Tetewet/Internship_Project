@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "InventoryComponent.h"
 #include "Engine/DataTable.h"
 #include "Engine.h"
 #include "UObject/ConstructorHelpers.h"
@@ -71,9 +72,18 @@ struct FQuestData :public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 		bool IsQuestCompleted = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+		FItemBaseData QuestItemReward;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Quest")
+		bool IsQuestRegistered = false;
+
 	//array of objective so that each quest can have a multiple objectives
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 		TArray<FObjectiveData> objectives;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
+		float ExperienceGainedFromQuest;
 
 	bool operator==(const FQuestData& Q) const;
 
@@ -100,7 +110,7 @@ public:
 	// Sets default values for this actor's properties
 	AQuestActor();
 
-	bool IsQuestActive=false;
+	bool IsQuestRegistered=false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 	FName QuestID;
@@ -113,14 +123,10 @@ public:
 
 	FQuestData QuestData;
 
-	//FText QuestNameText;
-	//FText QuestDescriptionText;
-
 
 	//Function to organize the quests in the  editor it attaches the location to the parent 
 	UFUNCTION(CallInEditor, BlueprintCallable)
 		void OrganiseQuestInEditor();
-
 
 protected:
 	// Called when the game starts or when spawned
@@ -129,7 +135,5 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-
 
 };

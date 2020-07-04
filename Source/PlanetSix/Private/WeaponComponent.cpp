@@ -8,7 +8,7 @@
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
-	: PrimaryAmmo(20.f)
+	: PrimaryAmmo(200.f)
 	, SecondaryAmmo(10.f)
 	, TertiaryAmmo(5.f)
 {
@@ -35,7 +35,7 @@ void UWeaponComponent::BeginPlay()
 
 	// ...
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, FString::Printf(TEXT("%f, %f, %f"), PrimaryAmmo.CurrentAmmo, SecondaryAmmo.CurrentAmmo, TertiaryAmmo.CurrentAmmo));
-	PrimaryAmmo.SetCurrentValue(200);
+	PrimaryAmmo.SetCurrentValue(2000);
 }
 
 void UWeaponComponent::OnPrimaryAmmoUpdate()

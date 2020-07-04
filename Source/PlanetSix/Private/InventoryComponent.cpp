@@ -2,6 +2,7 @@
 
 #include "InventoryComponent.h"
 #include "PlanetSixCharacter.h"
+#include "PLanetSixGameInstance.h"
 #include "ItemBase.h"
 #include "Engine.h"
 
@@ -87,17 +88,18 @@ int UInventoryComponent::GetQuestSize()
 //
 bool UInventoryComponent::addNormal(FItemBaseData item)
 {
+    auto x = Cast<UPlanetSixGameInstance>(owner->GetGameInstance());
+
+    
     //look for the first available spot.
     for (int i = 0; i < items.Num(); i++)
     {
-
-
         //if there is someting
         if (!items[i].getId() == 0)
         {
             //it item already in inventory
             //return items[i].Stack(item);
-
+          
             if (items[i].Stack(item))
             {
                 return true;
@@ -114,6 +116,8 @@ bool UInventoryComponent::addNormal(FItemBaseData item)
         }
     }
 
+  
+    x->AddItemsToinventoryplayer(items);
 
     //if there is no spot left
     return false;
@@ -124,8 +128,6 @@ bool UInventoryComponent::addQuest(FItemBaseData item)
     //look for the first available spot.
     for (int i = 0; i < QuestItems.Num(); i++)
     {
-
-
         //if there is someting
         if (!QuestItems[i].getId() == 0)
         {
@@ -152,6 +154,27 @@ bool UInventoryComponent::addQuest(FItemBaseData item)
 
     //if there is no spot left
     return false;
+}
+
+void UInventoryComponent::RemoveQuestItem(int id, int quantity)
+{
+    for (size_t i = 0; i < QuestItems.Num(); i++)
+    {
+        if (QuestItems[i].id == id)
+        {
+            if (quantity < 1)
+            {
+                auto itemId = FItemBaseData();
+                itemId.id = id;
+                QuestItems.RemoveSingle(itemId);
+            }
+            else
+            {
+                QuestItems[i].quantity -= quantity;
+            }
+        }
+    }
+
 }
 
 // Description:
@@ -188,7 +211,7 @@ bool UInventoryComponent::add(FItemBaseData item, int  numberOfQuestItems)
         return addNormal(NormalItem);
 
     }
-    return false;
+    return true;
 }
 
 // Description:

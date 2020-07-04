@@ -62,11 +62,16 @@ protected:
 		class UStaticMeshComponent* mesh;
 	UPROPERTY(Category = Item, VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		USphereComponent* sphereCollider;
-	
+	FRotator Rotation;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FItemBaseData itemData;// UMETA(ExposeOnSpawn = "true");
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FItemBaseData itemData UMETA(ExposeOnSpawn = "true");
+	int itemId UMETA(ExposeOnSpawn = "true");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int quantity UMETA(ExposeOnSpawn = "true");
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -77,4 +82,9 @@ public:
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+
+	FItemBaseData* itemDataPointer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UDataTable* ItemDataTable;
 };

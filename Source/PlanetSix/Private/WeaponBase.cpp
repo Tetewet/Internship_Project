@@ -36,12 +36,22 @@ void AWeaponBase::BeginPlay()
 	}
 }
 
-void AWeaponBase::Fire_Implementation()
+APlayerCameraManager* AWeaponBase::GetLocalCameraManager()
+{
+	return UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+}
+
+void AWeaponBase::DoWeaponDamage_Implementation(ABaseCharacter* ActorHit, APlanetSixCharacter* DamageDealer)
+{
+	ActorHit->ReceiveDamage(DamageDealer->WeaponDamage());
+}
+
+void AWeaponBase::Fire(ABaseCharacter*& ActorToHit, APlanetSixCharacter*& DamageGiver)
 {
 	//logic of firing : can't fire if jammed
 	if (bIsWeaponJammed == false)
 	{
-		APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+		APlayerCameraManager* CameraManager = GetLocalCameraManager();
 		FVector BeginCrosshair = CameraManager->GetCameraLocation();
 		FVector EndCrosshair = CameraManager->GetCameraLocation() + CameraManager->GetCameraRotation().Vector() * 10000;
 		FCollisionQueryParams QueryParams;
@@ -50,20 +60,23 @@ void AWeaponBase::Fire_Implementation()
 		QueryParams.bTraceComplex = true;
 
 		FHitResult Hit;
-		if (GetWorld()->LineTraceSingleByChannel(Hit, BeginCrosshair, EndCrosshair, ECC_Visibility, QueryParams))
+		if (GetWorld()->LineTraceSingleByChannel(Hit, BeginCrosshair, EndCrosshair, ECC_Pawn, QueryParams))
 		{
 			DrawDebugLine(GetWorld(), BeginCrosshair, EndCrosshair, FColor::Blue, false, 1.0f, 0, 1.0f);
 			FVector StartFiringLocation = MuzzleLocation->GetComponentLocation();
 			FVector EndFiringLocation = Hit.Location;
 			GetWorld()->LineTraceSingleByChannel(Hit, StartFiringLocation, EndFiringLocation, ECC_Pawn, QueryParams);
 			DrawDebugLine(GetWorld(), StartFiringLocation, EndFiringLocation, FColor::Red, false, 1.0f, 0, 1.0f);
-			auto ActorHit = Cast<ABaseCharacter>(Hit.GetActor());
+			auto ActorHit = Cast<APlanetSixEnemy>(Hit.GetActor());
 			if (ActorHit != nullptr)
 			{
+				ActorToHit = ActorHit;
+				DamageGiver = OwnerPlayer;
+				//DoWeaponDamage(ActorHit, OwnerPlayer);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("LIFE OF ENEMY : %f DAMAGE INFLICTED : %f"), ActorHit->Attributes->Health.GetCurrentValue(), OwnerPlayer->WeaponDamage()));
-				ActorHit->ReceiveDamage(OwnerPlayer->WeaponDamage());
 				if (ActorHit->IsDead())
 				{
+					OwnerPlayer->Attributes->Experience.SetCurrentValue(OwnerPlayer->Attributes->Experience.GetCurrentValue() + ActorHit->Experience);
 					//To check if Quest has a Killing condition
 					UPlanetSixGameInstance* GameInstance = Cast<UPlanetSixGameInstance>(GetGameInstance());
 					int objectiveNumber = GameInstance->GetCurrentQuest().AtObjectiveNumber;
@@ -71,11 +84,11 @@ void AWeaponBase::Fire_Implementation()
 					if (CurrentQuest.objectives.Num() > 0) {
 						//If at location
 						if (CurrentQuest.objectives[objectiveNumber].LocationToGo == UGameplayStatics::GetCurrentLevelName(GetWorld())) {
-							
+
 							//If needs to kill
 							if (CurrentQuest.objectives[objectiveNumber].Objectivetype == EObjectiveType::Kill)
 							{
-								
+
 								if (Cast<APlanetSixCharacter>(Hit.GetActor()))
 								{
 									GameInstance->ReduceCurrentTargetNumber(0);
@@ -85,10 +98,7 @@ void AWeaponBase::Fire_Implementation()
 								{
 									//If Enemy
 									GameInstance->ReduceCurrentTargetNumber(Cast<APlanetSixEnemy>(Hit.GetActor())->GetID());
-
-
 								}
-							
 							}
 						}
 					}

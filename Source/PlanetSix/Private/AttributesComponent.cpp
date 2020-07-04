@@ -14,7 +14,6 @@ UAttributesComponent::UAttributesComponent()
 	, Level(1.f)
 	, Experience(1.f)
 	, Health(100.f)
-	, Energy(50.f)
 	, Shield(10.f)
 	, ArmorReduction(25.f)
 	, WeaponDamage(1.f)
@@ -39,7 +38,6 @@ void UAttributesComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	DOREPLIFETIME(UAttributesComponent, Level);
 	DOREPLIFETIME(UAttributesComponent, Experience);
 	DOREPLIFETIME(UAttributesComponent, Health);
-	DOREPLIFETIME(UAttributesComponent, Energy);
 	DOREPLIFETIME(UAttributesComponent, Shield);
 	//-----------------------------------------------------------
 	DOREPLIFETIME(UAttributesComponent, ArmorReduction);
@@ -174,34 +172,6 @@ void UAttributesComponent::OnCurrentHealthUpdate()
 
 }
 
-void UAttributesComponent::OnCurrentEnergyUpdate()
-{
-	//client-specific functionality
-	if (OwnerPawn != nullptr && OwnerPawn->IsLocallyControlled())
-	{
-		FString energyMessage = FString::Printf(TEXT("You now have %f energy remaining."), Energy.GetCurrentValue());
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, energyMessage);
-
-		if (Energy.GetCurrentValue() <= 0)
-		{
-			FString zeroMessage = FString::Printf(TEXT("Your energy is depleted... wait for it to recharge or consume an energy bar"));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, zeroMessage);
-		}
-	}
-
-	//server specific functionality
-	if (OwnerPawn != nullptr && OwnerPawn->GetLocalRole() == ROLE_Authority)
-	{
-		FString energyMessage = FString::Printf(TEXT("%s now has %f energy remaining."), *GetFName().ToString(), Energy.GetCurrentValue());
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, energyMessage);
-	}
-
-	//functions that occur on all machines.
-	/** Any special functionality that should occur as a result of lack of energy should be placed here */
-
-	//CurrentEnergy.SetCurrentValue(0.f);
-}
-
 void UAttributesComponent::OnCurrentShieldUpdate()
 {
 	//client-specific functionality
@@ -253,7 +223,6 @@ void UAttributesComponent::OnRep_AbilitiesProficiency() { UAttributesComponent::
 void UAttributesComponent::OnRep_Level() { UAttributesComponent::OnLevelUpdate(); }
 void UAttributesComponent::OnRep_Experience() { UAttributesComponent::OnExperienceUpdate(); }
 void UAttributesComponent::OnRep_CurrentHealth() { UAttributesComponent::OnCurrentHealthUpdate(); }
-void UAttributesComponent::OnRep_CurrentEnergy() { UAttributesComponent::OnCurrentEnergyUpdate(); }
 void UAttributesComponent::OnRep_CurrentShield() { UAttributesComponent::OnCurrentShieldUpdate(); }
 //-----------------------------------------------------------------------------------------------------------------
 void UAttributesComponent::OnRep_ArmorReduction() { UAttributesComponent::OnArmorReductionUpdate(); }

@@ -44,7 +44,7 @@ public:
 
 	bool bOnInteraction;
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 		FQuestData NPCQuest;
 
 	//The Component of the data table to be able to be read in Unreal

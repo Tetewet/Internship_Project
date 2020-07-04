@@ -27,7 +27,7 @@ struct PLANETSIX_API FAmmoData
 	{}
 
 	FAmmoData(float DefaultValue)
-		: CurrentAmmo(DefaultValue)
+		: CurrentAmmo(DefaultValue * 10)
 		, MaxAmmo(DefaultValue * 10)
 	{}
 

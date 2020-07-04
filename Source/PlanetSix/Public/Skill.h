@@ -7,6 +7,7 @@
 #include "Skill.generated.h"
 
 class APlanetSixCharacter;
+class APlanetSixEnemy;
 struct FTableRowBase;
 class UTexture2D;
 
@@ -63,7 +64,7 @@ struct FSkillData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
 		FText SkillDescription;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
-		int32 EnergyCost;
+		float Cooldown;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
 		UTexture2D* SkillIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
@@ -81,8 +82,10 @@ public:
 	// Sets default values for this actor's properties
 	ASkill();
 
-	UFUNCTION(BlueprintGetter = "EnergyCost")
-		float GetEnergyCost() { return EnergyCost; }
+	UFUNCTION(BlueprintGetter = "Cooldown")
+		float GetCurrentCooldown() { return CurrentCooldown; }
+	UFUNCTION(BlueprintGetter = "Cooldown")
+		float GetCooldownMax() { return CooldownMax; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -95,7 +98,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		APlanetSixCharacter* OwnerCharacter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float EnergyCost;
+		float CurrentCooldown = 5.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float CooldownMax;
+	/** if is in cooldown returns true, can not cast the skill */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bIsInCooldown;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Duration;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -126,7 +134,19 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Damage Mechanics")
-		void DoDamage(ABaseCharacter* DamageReceiver);
-	void DoDamage_Implementation(ABaseCharacter* DamageReceiver);
+	
+	/** Function that is called by the skill, replicated, deals damage */
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Damage Mechanics")
+		void DoDamage(APlanetSixEnemy* DamageReceiver);
+	void DoDamage_Implementation(APlanetSixEnemy* DamageReceiver);
+
+	/** Function that is called by the skill, replicated, heals health */
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Damage Mechanics")
+		void DoHealthRegen(APlanetSixCharacter* HealReceiver);
+	void DoHealthRegen_Implementation(APlanetSixCharacter* HealReceiver);
+
+	/** Function that is called by the skill, replicated, heals shields */
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Damage Mechanics")
+		void DoShieldRegen(APlanetSixCharacter* HealReceiver);
+	void DoShieldRegen_Implementation(APlanetSixCharacter* HealReceiver);
 };

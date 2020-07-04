@@ -39,7 +39,7 @@ public:
 
 	//Reference of NPC 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FQuestData QuestData;
+	ANPC* QuestDataNPC;
 
 
 public:

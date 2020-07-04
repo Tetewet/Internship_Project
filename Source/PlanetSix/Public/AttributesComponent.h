@@ -143,9 +143,6 @@ public:
 	/** CurrentHealth attribute for the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health", Replicated, ReplicatedUsing = OnRep_CurrentHealth)
 		FAttributesData Health;
-	/** CurrentEnergy attribute for the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Energy", Replicated, ReplicatedUsing = OnRep_CurrentEnergy)
-		FAttributesData Energy;
 	/** CurrentShield attribute for the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Shield", Replicated, ReplicatedUsing = OnRep_CurrentShield)
 		FAttributesData Shield;
@@ -173,8 +170,6 @@ public:
 	void OnExperienceUpdate();
 	/** Response to current health being updated. Called on the server immediately after modification, and on clients in response to a RepNotify */
 	void OnCurrentHealthUpdate();
-	/** Response to current energy being updated. Called on the server immediately after modification, and on clients in response to a RepNotify */
-	void OnCurrentEnergyUpdate();
 	/** Response to current shield being updated. Called on the server immediately after modification, and on clients in response to a RepNotify */
 	void OnCurrentShieldUpdate();
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -200,8 +195,6 @@ public:
 		virtual void OnRep_Experience();
 	UFUNCTION()
 		virtual void OnRep_CurrentHealth();
-	UFUNCTION()
-		virtual void OnRep_CurrentEnergy();
 	UFUNCTION()
 		virtual void OnRep_CurrentShield();
 	//----------------------------------------------------

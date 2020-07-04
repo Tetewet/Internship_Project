@@ -18,31 +18,17 @@ void UNPCQuestWidget::NativeConstruct() {
 	Reject->OnClicked.AddDynamic(this, &UNPCQuestWidget::RejectQuest);
 	
 	
-
-	/*TextName->Text = QuestData.QuestTitleName;
-	TextDescription->Text = QuestData.QuestDescription;*/
-
-	
 }
 
 void UNPCQuestWidget::AcceptQuest()
 {
-
-	RemoveFromParent();
-/*	if (NPCRef) 
-	{
-		NPCRef->SpecifiedQuestOFNPC->IsQuestActive = true;
-	}*/
-
-
+	QuestDataNPC->NPCQuest.IsQuestRegistered= true;
 	
 }
 
 void UNPCQuestWidget::RejectQuest()
 {
 	
-	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Blue, TEXT("questrejected"));
-
 }
 
 
@@ -50,17 +36,17 @@ void UNPCQuestWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	TextName->SetText(QuestData.QuestTitleName);
-	TextDescription->SetText( QuestData.QuestDescription);
+	TextName->SetText(QuestDataNPC->NPCQuest.QuestTitleName);
+	TextDescription->SetText(QuestDataNPC->NPCQuest.QuestDescription);
 
 	//most consuming Thing i have ever used but it works -Youcef
-	for (int32 i = 0; i < QuestData.objectives.Num(); i++)
+	for (int32 i = 0; i < QuestDataNPC->NPCQuest.objectives.Num(); i++)
 	{
-		TextObjectives1->SetText(QuestData.objectives[i].ObjectiveDescription);
+		TextObjectives1->SetText(QuestDataNPC->NPCQuest.objectives[i].ObjectiveDescription);
 		/*TextObjectives2->SetText(QuestData.objectives[i].ObjectiveDescription);*/
 	}
 	
-	print("Printing " + QuestData.QuestTitleName.ToString(), 9);
+	print("Printing " + QuestDataNPC->NPCQuest.QuestTitleName.ToString(), 9);
 	
 
 }

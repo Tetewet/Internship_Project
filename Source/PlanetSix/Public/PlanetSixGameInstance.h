@@ -13,44 +13,52 @@
 UCLASS()
 class PLANETSIX_API UPlanetSixGameInstance : public UGameInstance
 {
-	GENERATED_BODY()
-
-
+    GENERATED_BODY()
 
 private:
 
 
-	//PlayerCharacter values
-		FPlayerInfo PlayerInfo;
+    //PlayerCharacter values
+    FPlayerInfo PlayerInfo;
 
 public:
 
-	UFUNCTION(BlueprintCallable)
-	void SetPlayerInfo(FPlayerInfo info);
-	
-	UFUNCTION(BlueprintCallable)
-	FPlayerInfo GetPlayerInfo();
-	
-	UFUNCTION(BlueprintCallable)
-	void ReloadNetwork();
+    UFUNCTION(BlueprintCallable)
+        void SetPlayerInfo(FPlayerInfo info);
 
-	//Quest Manager Functions
-	UFUNCTION(BlueprintCallable)
-	FQuestData GetCurrentQuest();
+    UFUNCTION(BlueprintCallable)
+        FPlayerInfo GetPlayerInfo();
 
-	UFUNCTION(BlueprintCallable)
-	void SetCurrentQuest(FQuestData Quest);
-	
-	
-	UFUNCTION(BlueprintCallable)
-	void MoveToNextObjective();
-	
-	UFUNCTION(BlueprintCallable)
-	void ReduceCurrentTargetNumber(int ID);
-	
-	UFUNCTION(BlueprintCallable)
-	void AddQuest(FQuestData quest);
-	//
+    UFUNCTION(BlueprintCallable)
+        void ReloadNetwork();
+
+    //Quest Manager Functions
+    UFUNCTION(BlueprintCallable)
+        FQuestData GetCurrentQuest();
+
+    UFUNCTION(BlueprintCallable)
+        void SetCurrentQuest(FQuestData Quest);
+
+  
+    UFUNCTION(BlueprintCallable)
+        bool GetQuestRegistered(FQuestData Quest);
+
+    UFUNCTION(BlueprintCallable)
+        void MoveToNextObjective();
+
+    UFUNCTION(BlueprintCallable)
+        void ReduceCurrentTargetNumber(int ID);
+
+    UFUNCTION(BlueprintCallable)
+        int ReduceItemNumber(int ID, int Quantity);
+
+    
+    UFUNCTION(BlueprintCallable)
+        void AddQuest(FQuestData quest);
+    
+
+    UFUNCTION(BlueprintCallable)
+        void AddItemsToinventoryplayer(TArray<FItemBaseData> Items);
 
 
 

@@ -9,14 +9,15 @@
 
 class USkeletalMeshComponent;
 class UDamageType;
+class APlayerCameraManager;
 class APlanetSixCharacter;
 
 UCLASS()
 class PLANETSIX_API AWeaponBase : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AWeaponBase();
 
@@ -89,9 +90,14 @@ protected:
 	//---------------------------------------------------------------------------
 
 	/** Fires the gun when activated */
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable, Category = "Shoot Mechanics")
-		void Fire();
-	void Fire_Implementation();
+	UFUNCTION(BlueprintCallable, Category = "Shoot Mechanics")
+		void Fire(ABaseCharacter*& ActorToHit, APlanetSixCharacter*& DamageGiver);
+	//void Fire_Implementation();
+
+	/** Deals damage on server */
+	UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Shoot Mechanics")
+		void DoWeaponDamage(ABaseCharacter* ActorHit, APlanetSixCharacter* DamageDealer);
+	void DoWeaponDamage_Implementation(ABaseCharacter* ActorHit, APlanetSixCharacter* DamageDealer);
 
 	/** Reloads the gun when activated */
 	UFUNCTION(BlueprintCallable, Category = "Shoot Mechanics")
@@ -101,9 +107,11 @@ protected:
 	void StopRecoil();
 	bool IsWeaponJammed();
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	APlayerCameraManager* GetLocalCameraManager();
 
 	APlanetSixCharacter* OwnerPlayer;
 };
