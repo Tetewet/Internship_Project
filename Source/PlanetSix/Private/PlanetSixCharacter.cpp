@@ -77,16 +77,6 @@ APlanetSixCharacter::APlanetSixCharacter()
 
     SetReplicates(true);
 
-    /*AT THE MOMENT THIS IS IN BLUEPRINT (IT SHOULD BE IN BEGIN PLAY  ) */
-    //WidgetQuestNPC = CreateWidget<UNPCQuestWidget>(GetWorld(), NPCQuestWidgetClass);
-
-
-    /*static ConstructorHelpers::FObjectFinder<UDataTable> QuestActorDataObject(TEXT("DataTable'/Game/ThirdPersonCPP/Database/QuestDataTable.QuestDataTable'"));
-    if (QuestActorDataObject.Succeeded())
-    {
-
-    }*/
-
 }
 
 void APlanetSixCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -218,7 +208,6 @@ int APlanetSixCharacter::GetNumberNeededForQuest(int itemId, int quantity)
     {
         if (QuestAccepted.objectives[objectiveNumber].Targets.Contains(itemId))
         {
-
             if (QuestAccepted.objectives[objectiveNumber].Targets[itemId] > quantity)
             {
                 QuestAccepted.objectives[objectiveNumber].Targets[itemId] -= quantity;
@@ -244,24 +233,32 @@ void APlanetSixCharacter::ItemPickup()
 
 void APlanetSixCharacter::Interact()
 {
- 
-
     //Cast the player controller to get controller 
     auto PC = Cast<APlayerController>(GetController());
-
     //check if the player is the perimiter of the NPC 
     if (NPCReference)
     {
+        if (WidgetDialogueNPC && NPCReference->QuestID.IsNone()) 
+        {
+
+            if (!WidgetDialogueNPC->IsVisible()) 
+            {
+                WidgetDialogueNPC->AddToViewport();
+                PC->SetInputMode(FInputModeUIOnly());
+                PC->bShowMouseCursor = true;
+                PC->bEnableClickEvents = true;
+                PC->bEnableMouseOverEvents = true;
+            }
+           
+        }
+
         if (WidgetQuestNPC && !NPCReference->QuestID.IsNone()) {
             NPCReference->bOnInteraction = true;
-
             NPCReference->textrenderQuest->SetVisibility(false);
-
             WidgetQuestNPC->QuestDataNPC = NPCReference;
 
             //No work for some reason, Engine crashes with no pop-out -Alonso
             GetCharacterMovement()->StopActiveMovement();
-
             print("Registering " + WidgetQuestNPC->QuestDataNPC->NPCQuest.QuestTitleName.ToString(), -1);
 
             if (!WidgetQuestNPC->IsVisible() && NPCReference->NPCQuest.IsQuestRegistered == false)
@@ -272,22 +269,9 @@ void APlanetSixCharacter::Interact()
                 PC->bEnableClickEvents = true;
                 PC->bEnableMouseOverEvents = true;
 
-               // GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Bool in quest data widget : %s"), WidgetQuestNPC->QuestDataNPC->NPCQuest.IsQuestRegistered ? TEXT("true") : TEXT("false")));
-            }
-
-            else if (!WidgetQuestNPC->IsVisible() && NPCReference->NPCQuest.IsQuestRegistered)
-            {
-               /* print("Accessing the questdata in widget quest NPC", -1);
-                GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Black, FString::Printf(TEXT("Bool: %s"), WidgetQuestNPC->QuestDataNPC->NPCQuest.IsQuestRegistered ? TEXT("true") : TEXT("false")));
-            */
             }
         }
     }
-    else
-    {
-        //GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Blue, TEXT("GO NEAR SOMETHING "));
-    }
-
     /* Interaction with Travel Portal */
     if (Portal)
     {
@@ -345,20 +329,6 @@ void APlanetSixCharacter::Inventory()
 /** Open the quest log */
 void APlanetSixCharacter::QuestLog()
 {
-    /*auto PC = Cast<APlayerController>(GetController());
-   
-    if (QuestWidgetLog) 
-    {
-        if (!WidgetQuestLog->IsVisible())
-        {
-            WidgetQuestLog->AddToViewport();
-            PC->SetInputMode(FInputModeUIOnly());
-            PC->bShowMouseCursor = true;
-            PC->bEnableClickEvents = true;
-            PC->bEnableMouseOverEvents = true;
-        }
-    }*/
-   
       
 }
 

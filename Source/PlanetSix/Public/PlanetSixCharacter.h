@@ -17,6 +17,7 @@
 #include "PlanetSixCharacter.generated.h"
 
 class UNPCQuestWidget;
+class UNPCDialogueWidget;
 class UQuestWidget;
 class AQuestActor;
 class APlayerController;
@@ -49,6 +50,13 @@ public:
 
 	//Specified Portal
 	AMapTravel* Portal;
+
+	//this is to create the widget of the Dialogue  
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue UI")
+		TSubclassOf<UUserWidget> NPCDialogueWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite)
+		UNPCDialogueWidget* WidgetDialogueNPC;
 
 #pragma region(Quests Logic)
 	//this is to create the widget of the NPCQuest  
@@ -85,7 +93,9 @@ public:
    //Quest Accepted By Player
 	FQuestData QuestAccepted;
 
+
 	//Reference to NPC Actor
+	UPROPERTY(BlueprintReadWrite)
 	ANPC* NPCReference;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest UI")

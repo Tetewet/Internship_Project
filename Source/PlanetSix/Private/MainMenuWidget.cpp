@@ -9,6 +9,7 @@
 #include "PlanetSixSaveGame.h"
 #include "PlanetSixGameInstance.h"
 #include "PlanetSixPlayerState.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 #define print(text, i) if (GEngine) GEngine->AddOnScreenDebugMessage(i, 1.5, FColor::White,text)
@@ -27,28 +28,34 @@ void UMainMenuWidget::NativeConstruct() {
 	
 
 	GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
-	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameAndUI());
+	GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
 }
 
 void UMainMenuWidget::StartGame()
 {
 	print("Start Game", -1);
 
-	UPlanetSixSaveGame* SavedGame = Cast<UPlanetSixSaveGame>(UGameplayStatics::LoadGameFromSlot("Test", 0));
+	
+	TArray<UUserWidget*> FoundWidgets;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundWidgets, RefStartGameWidget);
+	if (FoundWidgets.Num() == 0) {
+		UUserWidget* StartGameWidget = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), RefStartGameWidget);
+
+		StartGameWidget->AddToViewport();
+	}
 
 	
-
-
-
-	UUserWidget* StartGameWidget = CreateWidget<UUserWidget>(GetWorld()->GetFirstPlayerController(), RefStartGameWidget);
-	StartGameWidget->AddToViewport();
 	RemoveFromParent();
 }
 
 void UMainMenuWidget::OpenOptions()
 {
-	UUserWidget* OptionsWidget = CreateWidget<UUserWidget>(GetWorld(), RefOptionWidget);
-	OptionsWidget->AddToViewport();
+	TArray<UUserWidget*> FoundWidgets;
+	UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), FoundWidgets, RefOptionWidget);
+	if (FoundWidgets.Num() == 0) {
+		UUserWidget* OptionsWidget = CreateWidget<UUserWidget>(GetWorld(), RefOptionWidget);
+		OptionsWidget->AddToViewport();
+	}
 	RemoveFromParent();
 
 	print("OpenOptions", -1);

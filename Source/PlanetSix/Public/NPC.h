@@ -47,13 +47,18 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		FQuestData NPCQuest;
 
+	UPROPERTY(BlueprintReadWrite,EditAnywhere)
+		int MaxNumOfDialogueLines;
+
 	//The Component of the data table to be able to be read in Unreal
 	FQuestData* QuestDataPointer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Quest")
 		class UDataTable* QuestDatatable;
 
-	
+	//the text for each dialogue line of the NPC 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+		TArray<FText> dialogueLinesArray;
 	
 
 protected:

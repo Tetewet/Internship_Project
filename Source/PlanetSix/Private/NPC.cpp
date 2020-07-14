@@ -51,7 +51,6 @@ void ANPC::BeginPlay()
 		textrenderQuest->SetVisibility(false);
 
 	}
-	
 	static const FString ContextString(TEXT("QuestDataTableCpp"));
 	QuestDataPointer = QuestDatatable->FindRow<FQuestData>(QuestID, ContextString, true);
 
